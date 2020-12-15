@@ -19,16 +19,15 @@ class PhabricatorExport	{
 		$query = 'SELECT * FROM phriction_document ORDER BY depth ASC';
 		$rows = $this->db->query($query);
 		$rows->setFetchMode(PDO::FETCH_ASSOC);
-
 		$return = array();
 		while($row = $rows->fetch()) {
-			$return[] = $this->getDocument($row['id']);
+			$return[] = $this->getDocument($row['contentPHID']);
 		}
 		return $return;
 	}
 
-	public function getDocument($id) {
-		$query = sprintf('SELECT * FROM phriction_content WHERE documentID = %d ORDER BY version DESC LIMIT 1', $id);
+	public function getDocument($phid) {
+		$query = sprintf('SELECT * FROM phriction_content WHERE phid = "%s" ORDER BY version DESC LIMIT 1', $phid);
 		$row = $this->db->query($query);
 		$row->setFetchMode(PDO::FETCH_CLASS, 'PhrictionDoc');
 		return $row->fetch();
